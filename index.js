@@ -1,21 +1,23 @@
 const express = require("express");
-const {connectMongoDb} = require('./connection')
+const {connectMongoDb} = require("./connection");
 
-const userRouter = require("./routes/user");
 const {logreqres} = require("./middlewares");
+const userRouter = require("./routes/user");
+
 
 const app = express();
 const PORT = 8000;
 
 //connection
-connectMongoDb("mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2");
+connectMongoDb("mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2").then(() => 
+console.log("MongoDb connected")
+);
 
 //Middleware - plugin(which store or show a data)
-app.use(express.urlencoded({ extended: false }))
-//THis is middleware one if it will not give response to next it will hold the request
+//app.use(express.urlencoded({ extended: false }));
 app.use(logreqres("log.txt"));
 
 //Routers
-app.use("/user",userRouter);
+app.use("/api/users",userRouter);
 
-app.listen(PORT, () => console.log(`server started at PORT 8000`));
+app.listen(PORT, () => console.log(`server started at PORT: ${PORT}`));
